@@ -1,261 +1,250 @@
-# TracePilot AI SDK 🚀
-## AI Agent Observability, Debugging, Tracing & Time-Travel Replay for OpenAI Agents
+<div align="center">
 
-The official Node.js and TypeScript SDK for TracePilot AI.
+<!-- Replace with your actual banner image: 1280x640px, dark background -->
+![TracePilot AI — Debug AI Agents in Production](https://tracepilotai.com/og-image.png)
 
-TracePilot helps developers debug autonomous AI agents like software engineers debug production systems.
+<h1>TracePilot AI</h1>
 
-Monitor, trace, replay, inspect, and fix AI workflows in real time with advanced observability tools for:
-- OpenAI agents
-- AI copilots
-- Autonomous workflows
-- LangChain apps
-- CrewAI systems
-- Multi-agent architectures
-- LLM applications
-- AI orchestration pipelines
+<p><strong>The debugging layer your AI agents have been missing.</strong><br/>
+Trace every decision, fork any execution, fix failures in seconds — not hours.</p>
 
-Perfect for developers searching for:
-- How to debug AI agents
-- AI agent observability
-- OpenAI debugging tools
-- LLM tracing platforms
-- AI workflow monitoring
-- AI execution replay
-- Prompt debugging
-- AI runtime inspection
-- AI stack traces
-- AI error tracing
-- AI debugging SDK
-- Autonomous agent debugging
-- Time-travel debugging for AI
-- AI infrastructure tools
+[![npm version](https://img.shields.io/npm/v/tracepilot-sdk?color=00e5ff&labelColor=0d0f14&style=flat-square)](https://www.npmjs.com/package/tracepilot-sdk)
+[![npm downloads](https://img.shields.io/npm/dm/tracepilot-sdk?color=7c3aed&labelColor=0d0f14&style=flat-square)](https://www.npmjs.com/package/tracepilot-sdk)
+[![License: MIT](https://img.shields.io/badge/license-MIT-emerald?labelColor=0d0f14&style=flat-square)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6?labelColor=0d0f14&style=flat-square)](https://www.typescriptlang.org/)
+
+[**Get API Key →**](https://tracepilotai.com) · [Dashboard](https://tracepilotai.com/dashboard) · [Report a bug](https://github.com/TracePilotAI/tracepilot-sdk/issues)
+
+</div>
 
 ---
 
-# 🔥 Why TracePilot?
+## The problem
 
-Modern AI agents fail silently.
+Your AI agent fails in production. It called GPT-4o 47 times, spent $3.20, and returned garbage. Your logs say `"agent finished"`. You have no idea what happened inside.
 
-Traditional logs are not enough for autonomous AI systems, multi-step reasoning pipelines, or tool-calling workflows.
-
-TracePilot gives you:
-- Full execution tracing
-- Runtime observability
-- Prompt inspection
-- Execution tree visualization
-- AI replay debugging
-- Span-based tracing
-- OpenAI call instrumentation
-- Agent execution history
-- Time-travel debugging
-- Real-time monitoring
-
-Debug AI agents the same way developers debug backend systems.
+Traditional observability tells you *that* something broke. TracePilot lets you **go back in time, change the input at the exact step that failed, and re-run from there** — without redeploying anything.
 
 ---
 
-# 📦 Installation
+## Demo
+
+<!-- Replace the link below with your actual Loom/YouTube demo URL -->
+<!-- Recommended: 60-90 second screen recording showing the Fork & Rerun flow -->
+
+[![Watch the demo](https://tracepilotai.com/demo-thumbnail.png)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+
+> *60 seconds: an agent fails, we fork the broken span, edit the prompt, and rerun live.*
+
+---
+
+## How it works
+
+You wrap your OpenAI calls with TracePilot. That's it.
+
+Every LLM call, every tool invocation, every token spent — captured as a structured trace. When something goes wrong, you open the dashboard, find the failing span, and hit **Fork & Rerun**. Edit the prompt right there. See the new output instantly. No redeployment. No guessing.
+
+```
+Your Agent  →  tp.wrapOpenAI()  →  OpenAI API
+                     ↓
+              TracePilot captures:
+              input · output · tokens · latency · errors
+                     ↓
+              Dashboard: visualize · fork · fix
+```
+
+---
+
+## Quickstart
+
+### 1. Install
 
 ```bash
 npm install tracepilot-sdk
 ```
 
----
+### 2. Get your API key
 
-# ⚡ Quick Start
+Sign in at [tracepilotai.com](https://tracepilotai.com) with GitHub or Google. Your key looks like:
+
+```
+tp_live_xxxxxxxxxxxxxxxx
+```
+
+### 3. Wrap your first agent
 
 ```ts
 import { TracePilot } from 'tracepilot-sdk';
 import OpenAI from 'openai';
 
-const tp = new TracePilot('YOUR_API_KEY');
-
-const openai = new OpenAI({
-  apiKey: 'YOUR_OPENAI_KEY',
-});
+const tp = new TracePilot('tp_live_YOUR_KEY');
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function runAgent() {
-  await tp.startTrace('Customer Support AI Agent');
+  await tp.startTrace('customer-support-agent');
 
-  const prompt = [
-    {
-      role: 'user',
-      content: 'How do I reset my password?',
-    },
+  const messages = [
+    { role: 'user', content: 'How do I reset my password?' }
   ];
 
-  const { result } = await tp.wrapOpenAI(
-    async () => {
-      return await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: prompt,
-      });
-    },
-    prompt,
-    undefined,
-    1
+  // One wrapper. Full visibility.
+  const { result, spanId } = await tp.wrapOpenAI(
+    () => openai.chat.completions.create({ model: 'gpt-4o-mini', messages }),
+    messages
   );
 
-  console.log(result.choices[0]?.message?.content);
+  console.log(result.choices[0].message.content);
+  // → Open your dashboard. You'll see the full trace.
 }
 
 runAgent();
 ```
 
----
-
-# 🧠 What Can You Debug With TracePilot?
-
-TracePilot is designed for:
-- AI SaaS applications
-- AI startups
-- Autonomous AI agents
-- Multi-agent systems
-- LLM infrastructure
-- AI copilots
-- AI automation tools
-- AI customer support systems
-- AI coding assistants
-- Retrieval-Augmented Generation (RAG) systems
-- LangChain workflows
-- CrewAI agents
-- OpenAI SDK integrations
-
-Use TracePilot to:
-- Detect hallucinations
-- Debug failed prompts
-- Analyze token flows
-- Trace agent decisions
-- Monitor OpenAI API calls
-- Replay execution paths
-- Inspect AI reasoning chains
-- Understand tool-calling failures
-- Visualize agent execution trees
+Open [tracepilotai.com/dashboard](https://tracepilotai.com/dashboard) — your trace is already there.
 
 ---
 
-# 💡 Get Your API Key
+## Time-Travel Debugging
 
-Visit https://tracepilotai.com to get your API Key and visualize your AI agent executions in real time.
+This is what makes TracePilot different.
 
----
-
-# 🚀 Features
-
-## ✅ AI Agent Tracing
-Track every AI execution step across your workflow.
-
-## ✅ OpenAI Instrumentation
-Wrap OpenAI calls automatically and capture execution data.
-
-## ✅ Time-Travel Debugging
-Replay autonomous AI workflows frame by frame.
-
-## ✅ AI Observability Dashboard
-Visualize prompts, responses, spans, errors, and execution trees.
-
-## ✅ Production Monitoring
-Monitor live AI systems in production environments.
-
-## ✅ Developer-Friendly SDK
-Simple TypeScript and Node.js integration.
-
----
-
-# 🧪 End-to-End Testing (Clean Room Test)
-
-Simulate exactly what a real developer would do when discovering your SDK from scratch.
-
-## Step 1 — Get Your Real API Key
-
-Go to https://tracepilotai.com, authenticate with GitHub or Google, and copy your real API Key from the dashboard.
-
-Example:
-
-```txt
-tp_live_xxxxxxxxxxxxxxxxx
-```
-
-## Step 2 — Create a New Project
-
-```bash
-mkdir test-agent-user
-```
-
-## Step 3 — Initialize the Project
-
-```bash
-cd test-agent-user
-npm init -y
-npm install tracepilot-sdk openai
-```
-
-## Step 4 — Create index.ts
+When an agent fails, you don't restart from zero. You **fork the execution at the exact failing step**.
 
 ```ts
-import { TracePilot } from 'tracepilot-sdk';
-import OpenAI from 'openai';
+// Multi-step agent with nested tool calls
+async function researchAgent(query: string) {
+  await tp.startTrace('research-agent');
 
-const tp = new TracePilot('YOUR_API_KEY');
+  const messages = [{ role: 'user', content: query }];
 
-const openai = new OpenAI({
-  apiKey: 'YOUR_OPENAI_KEY',
-});
-
-async function main() {
-  await tp.startTrace('AI Debug Test');
-
-  const messages = [
-    {
-      role: 'user',
-      content: 'Explain recursion simply.',
-    },
-  ];
-
-  const { result } = await tp.wrapOpenAI(
-    async () => {
-      return await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages,
-      });
-    },
+  // Step 1 — Initial reasoning
+  const { result: plan, spanId: planSpanId } = await tp.wrapOpenAI(
+    () => openai.chat.completions.create({ model: 'gpt-4o', messages }),
     messages
   );
 
-  console.log(result.choices[0]?.message?.content);
-}
+  // Step 2 — Tool call (tracked separately)
+  const { result: searchResult, spanId: searchSpanId } = await tp.wrapToolCall(
+    'web-search',
+    () => webSearch(plan.choices[0].message.content),
+    planSpanId,  // parent span — builds the execution tree
+    2
+  );
 
-main();
+  // Step 3 — Final synthesis
+  const followUp = [
+    ...messages,
+    plan.choices[0].message,
+    { role: 'tool', content: JSON.stringify(searchResult) }
+  ];
+
+  const { result: answer } = await tp.wrapOpenAI(
+    () => openai.chat.completions.create({ model: 'gpt-4o', messages: followUp }),
+    followUp,
+    searchSpanId,  // parent span
+    3
+  );
+
+  return answer.choices[0].message.content;
+}
+```
+
+If Step 3 produces a bad answer, open the dashboard → find span 3 → click **Fork & Rerun** → edit the messages → see the new result. **No redeployment. Seconds, not hours.**
+
+---
+
+## Features
+
+| | What it does |
+|---|---|
+| **Execution Tracing** | Every LLM call and tool invocation captured as a structured span tree |
+| **Time-Travel Forking** | Edit any span's input and re-execute from that exact point |
+| **Token & Cost Tracking** | Per-span token usage and estimated API cost in real time |
+| **Error Spans** | Failures captured automatically with full context |
+| **Destructive Call Warnings** | Flag tool calls that modify external state (DB writes, emails, etc.) |
+| **Live Dashboard** | Visualize execution trees, latency, RPS — no config needed |
+
+---
+
+## API Reference
+
+### `new TracePilot(apiKey, endpoint?)`
+
+```ts
+const tp = new TracePilot('tp_live_YOUR_KEY');
+// Custom endpoint for self-hosted:
+const tp = new TracePilot('tp_live_YOUR_KEY', 'https://tracepilotai.com/api/ingest');
+```
+
+### `tp.startTrace(agentName)`
+
+Starts a new trace session. Call once at the beginning of your agent run.
+
+```ts
+await tp.startTrace('my-agent');
+```
+
+### `tp.wrapOpenAI(call, messages, parentSpanId?, stepOrder?)`
+
+Wraps any OpenAI chat completion call. Returns the original result untouched plus the `spanId` for building parent-child trees.
+
+```ts
+const { result, spanId } = await tp.wrapOpenAI(
+  () => openai.chat.completions.create({ model: 'gpt-4o-mini', messages }),
+  messages,
+  parentSpanId,  // optional — links this span to a parent
+  1              // optional — step order in the execution tree
+);
+```
+
+### `tp.wrapToolCall(toolName, call, parentSpanId, stepOrder, isDestructive?)`
+
+Wraps any tool/function call. Set `isDestructive: true` for operations that modify external state.
+
+```ts
+const { result, spanId } = await tp.wrapToolCall(
+  'send-email',
+  () => sendEmail(to, subject, body),
+  parentSpanId,
+  2,
+  true  // marks this span with a ⚠ Destructive badge in the dashboard
+);
 ```
 
 ---
 
-# 📚 API Reference
+## Works with your existing stack
 
-| Method | Description |
-|---|---|
-| `new TracePilot(apiKey)` | Initializes the SDK with your API Key |
-| `tp.startTrace(name)` | Starts a new trace for your AI agent |
-| `tp.wrapOpenAI(fn, prompt, parentSpanId?, depth?)` | Wraps an OpenAI call and captures the execution tree |
+TracePilot wraps your calls — it doesn't replace them. No lock-in, no SDK sprawl.
 
----
-
-# 🌍 SEO Keywords
-
-AI debugging tool, AI observability platform, OpenAI debugging SDK, AI tracing software, LLM observability, AI execution replay, autonomous agent monitoring, prompt debugging tool, AI infrastructure platform, AI developer tools, AI tracing SDK, AI runtime debugging, LangChain observability, CrewAI debugging, AI execution tracing, AI monitoring SaaS.
+- **OpenAI SDK** — `wrapOpenAI`
+- **LangChain** — wrap the underlying OpenAI calls
+- **CrewAI** — wrap at the agent tool level
+- **AutoGen** — compatible with any async call pattern
+- **Custom orchestration** — if it's async, you can wrap it
 
 ---
 
-# 🔗 Links
+## Roadmap
 
-- 🌐 Website: https://tracepilotai.com
-- 📦 npm: https://www.npmjs.com/package/tracepilot-sdk
-- 🐙 GitHub: https://github.com/TracePilotAI
+- [x] OpenAI instrumentation
+- [x] Tool call tracing
+- [x] Time-Travel Forking
+- [x] Cost & token tracking
+- [ ] Python SDK
+- [ ] Semantic caching (automatic 30% cost reduction)
+- [ ] Auto-remediation (loop detection + circuit breaker)
+- [ ] Golden Traces (behavioral drift alerts)
 
 ---
 
-# 📄 License
+## Contributing
 
-MIT © TracePilot AI
+Issues and PRs are welcome. If you're building something with autonomous agents and want to shape the roadmap, [open an issue](https://github.com/TracePilotAI/tracepilot-sdk/issues) or reach out directly.
+
+---
+
+## License
+
+MIT © [TracePilot AI](https://tracepilotai.com)
 
