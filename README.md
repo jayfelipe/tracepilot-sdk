@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Replace with your actual banner image: 1280x640px, dark background -->
-![TracePilot AI — Debug AI Agents in Production](https://ibb.co/9mK8KTvx)
+![TracePilot AI — Debug AI Agents in Production](https://tracepilotai.com/og-image.png)
 
 <h1>TracePilot AI</h1>
 
@@ -13,7 +13,7 @@ Trace every decision, fork any execution, fix failures in seconds — not hours.
 [![License: MIT](https://img.shields.io/badge/license-MIT-emerald?labelColor=0d0f14&style=flat-square)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6?labelColor=0d0f14&style=flat-square)](https://www.typescriptlang.org/)
 
-[**Get API Key →**](https://tracepilotai.com) · [Dashboard](https://tracepilotai.com/dashboard) · [Report a bug]([https://github.com/TracePilotAI/tracepilot-sdk/issues](https://discord.gg/ktYCtCA8D))
+[**Get API Key →**](https://tracepilotai.com) · [Dashboard](https://tracepilotai.com/dashboard) · [Report a bug](https://github.com/TracePilotAI/tracepilot-sdk/issues)
 
 </div>
 
@@ -173,7 +173,7 @@ If Step 3 produces a bad answer, open the dashboard → find span 3 → click **
 ```ts
 const tp = new TracePilot('tp_live_YOUR_KEY');
 // Custom endpoint for self-hosted:
-const tp = new TracePilot('tp_live_YOUR_KEY', 'https://tracepilotai.com/api/ingest');
+const tp = new TracePilot('tp_live_YOUR_KEY', 'https://your-server.com/api/ingest');
 ```
 
 ### `tp.startTrace(agentName)`
@@ -247,4 +247,3 @@ Issues and PRs are welcome. If you're building something with autonomous agents 
 ## License
 
 MIT © [TracePilot AI](https://tracepilotai.com)
-
